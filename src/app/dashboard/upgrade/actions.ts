@@ -5,8 +5,6 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-
 const PRICE_IDS: Record<string, string> = {
   founding: process.env.STRIPE_PRICE_FOUNDING!,
   monthly: process.env.STRIPE_PRICE_MONTHLY!,
@@ -45,6 +43,8 @@ export async function createCheckoutSession(formData: FormData) {
 
   const priceId = PRICE_IDS[plan]
   if (!priceId) return
+
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
   // Reuse or create Stripe customer
   let customerId = profile?.stripe_customer_id ?? undefined

@@ -4,8 +4,6 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-
 export default async function UpgradeSuccessPage({
   searchParams,
 }: {
@@ -18,6 +16,7 @@ export default async function UpgradeSuccessPage({
   const sessionId = searchParams.session_id
   if (!sessionId) redirect('/dashboard')
 
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
   let plan: string | null = null
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId)
