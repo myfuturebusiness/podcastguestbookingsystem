@@ -16,7 +16,7 @@ export default async function UpgradeSuccessPage({
   const sessionId = searchParams.session_id
   if (!sessionId) redirect('/dashboard')
 
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!.trim())
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!.replace(/\s/g, ''))
   let plan: string | null = null
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId)
