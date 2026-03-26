@@ -61,7 +61,8 @@ export async function createCheckoutSession(formData: FormData) {
       .eq('id', user.id)
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
