@@ -7,8 +7,8 @@ import Stripe from 'stripe'
 import { getAppUrl } from '@/lib/app-url'
 
 const PRICE_IDS: Record<string, string> = {
-  founding: process.env.STRIPE_PRICE_FOUNDING!,
-  monthly: process.env.STRIPE_PRICE_MONTHLY!,
+  founding: (process.env.STRIPE_PRICE_FOUNDING ?? '').trim(),
+  monthly: (process.env.STRIPE_PRICE_MONTHLY ?? '').trim(),
 }
 
 const FOUNDING_MAX_SEATS = parseInt(process.env.STRIPE_FOUNDING_MAX_SEATS ?? '25', 10)
