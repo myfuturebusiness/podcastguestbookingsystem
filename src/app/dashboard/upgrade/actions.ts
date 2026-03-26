@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import Stripe from 'stripe'
+import { getAppUrl } from '@/lib/app-url'
 
 const PRICE_IDS: Record<string, string> = {
   founding: process.env.STRIPE_PRICE_FOUNDING!,
@@ -61,8 +62,7 @@ export async function createCheckoutSession(formData: FormData) {
       .eq('id', user.id)
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+  const appUrl = getAppUrl()
 
   const session = await stripe.checkout.sessions.create({
     customer: customerId,

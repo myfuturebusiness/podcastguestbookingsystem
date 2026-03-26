@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { sendEmail } from '@/lib/brevo'
 import { emailWrap } from '@/lib/email-templates'
+import { getAppUrl } from '@/lib/app-url'
 
 async function verifyRecaptcha(token: string): Promise<boolean> {
   const secret = process.env.RECAPTCHA_SECRET_KEY
@@ -42,7 +43,7 @@ export async function signUp(formData: FormData) {
         full_name: formData.get('full_name') as string,
         role: formData.get('role') as string,
       },
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+      emailRedirectTo: `${getAppUrl()}/auth/callback`,
     },
   })
 

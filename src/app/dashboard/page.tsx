@@ -5,6 +5,7 @@ import ThemeToggle from '@/components/ui/ThemeToggle'
 import Logo from '@/components/ui/Logo'
 import CopyLinkButton from '@/components/ui/CopyLinkButton'
 import { approveBooking, rejectBooking, deleteApplication, markComplete, rescheduleBooking, hostRequestReschedule } from './actions'
+import { getAppUrl } from '@/lib/app-url'
 import FormButton from '@/components/ui/FormButton'
 
 async function signOut() {
@@ -318,7 +319,7 @@ export default async function DashboardPage({
                     </p>
                     <div className="mt-3">
                       <CopyLinkButton
-                        url={`${process.env.NEXT_PUBLIC_APP_URL}/book/${podcast.id}`}
+                        url={`${getAppUrl()}/book/${podcast.id}`}
                       />
                     </div>
                   </div>

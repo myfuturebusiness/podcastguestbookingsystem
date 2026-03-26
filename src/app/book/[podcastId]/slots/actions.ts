@@ -7,6 +7,7 @@ import { sendEmail } from '@/lib/brevo'
 import { emailWrap } from '@/lib/email-templates'
 import { formatInTimezone } from '@/lib/availability'
 import { fireWebhooks } from '@/lib/webhooks'
+import { getAppUrl } from '@/lib/app-url'
 
 function generateTempPassword(): string {
   const upper = 'ABCDEFGHJKMNPQRSTUVWXYZ'
@@ -161,7 +162,7 @@ export async function confirmSlot(formData: FormData) {
     })
     const slotDate = guestSlotFormatted
     void guestSlotEnd
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL
+    const appUrl = getAppUrl()
 
     const credentialsBlock =
       isNewUser && tempPassword
@@ -244,7 +245,7 @@ export async function confirmSlot(formData: FormData) {
         const hostTimezone =
           (hostProfile as unknown as { timezone?: string }).timezone ?? 'UTC'
         const hostSlotFormatted = formatInTimezone(slot.start_time, hostTimezone)
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL
+        const appUrl = getAppUrl()
 
         const hostHtml = emailWrap(`
   <h1 style="color:#4f46e5;margin-bottom:4px;">New Application to Review</h1>

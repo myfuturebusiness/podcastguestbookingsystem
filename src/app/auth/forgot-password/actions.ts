@@ -2,13 +2,14 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { getAppUrl } from '@/lib/app-url'
 
 export async function forgotPassword(formData: FormData) {
   const supabase = createClient()
   const email = formData.get('email') as string
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?next=/auth/reset-password`,
+    redirectTo: `${getAppUrl()}/auth/callback?next=/auth/reset-password`,
   })
 
   if (error) {

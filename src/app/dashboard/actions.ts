@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { getAppUrl } from '@/lib/app-url'
 import { sendEmail } from '@/lib/brevo'
 import { emailWrap } from '@/lib/email-templates'
 import { formatInTimezone } from '@/lib/availability'
@@ -299,8 +300,7 @@ export async function hostRequestReschedule(bookingRequestId: string) {
       .eq('id', application.id)
 
     // Send reschedule email to guest with a link to pick a new time
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL
-    const slotsUrl = `${appUrl}/book/${br.podcast_id}/slots?app=${application.id}&reschedule=1`
+    const slotsUrl = `${getAppUrl()}/book/${br.podcast_id}/slots?app=${application.id}&reschedule=1`
 
     const brTyped2 = br as unknown as { slot_start_time?: string; guest_timezone?: string }
     const guestTz2 = brTyped2.guest_timezone || 'UTC'

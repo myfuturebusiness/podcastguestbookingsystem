@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
+import { getAppUrl } from '@/lib/app-url'
 
 export async function createCheckoutSession(formData: FormData) {
   const applicationId = formData.get('application_id') as string
@@ -46,7 +47,7 @@ export async function createCheckoutSession(formData: FormData) {
 
   const Stripe = (await import('stripe')).default
   const stripe = new Stripe(stripeSecretKey!)
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL
+  const appUrl = getAppUrl()
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],

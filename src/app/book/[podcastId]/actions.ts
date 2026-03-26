@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { randomUUID } from 'crypto'
+import { getAppUrl } from '@/lib/app-url'
 
 export async function submitApplication(formData: FormData) {
   const podcastId = formData.get('podcast_id') as string
@@ -129,7 +130,7 @@ export async function submitApplication(formData: FormData) {
     redirect(`/book/${podcastId}/slots?app=${applicationId}`)
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL
+  const appUrl = getAppUrl()
   const cancelUrl = `${appUrl}${applyBase}&error=Payment+was+cancelled.+Please+try+again.`
 
   // PayPal — use podcast's own credentials, fall back to platform env if set
