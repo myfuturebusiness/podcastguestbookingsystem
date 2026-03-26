@@ -44,7 +44,7 @@ export async function createCheckoutSession(formData: FormData) {
   const priceId = PRICE_IDS[plan]
   if (!priceId) return
 
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!.trim())
 
   // Reuse or create Stripe customer
   let customerId = profile?.stripe_customer_id ?? undefined
