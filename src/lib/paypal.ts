@@ -98,6 +98,134 @@ export async function capturePayPalOrder(
   return { success: data.status === 'COMPLETED', captureId }
 }
 
+// ── Platform subscription functions ─────────────────────────────────────────
+
+export async function createPayPalSubscription(params: {
+  planId: string
+  returnUrl: string
+  cancelUrl: string
+  customId: string // supabase user ID
+}): Promise<{ subscriptionId: string; approvalUrl: string }> {
+  const creds = {
+    clientId: process.env.PAYPAL_CLIENT_ID!,
+    clientSecret: process.env.PAYPAL_CLIENT_SECRET!,
+  }
+  const accessToken = await getAccessToken(creds)
+
+  const res = await fetch(`${getBaseUrl()}/v1/billing/subscriptions`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      plan_id: params.planId,
+      custom_id: params.customId,
+      application_context: {
+        brand_name: 'Guest Booking System',
+        shipping_preference: 'NO_SHIPPING',
+        user_action: 'SUBSCRIBE_NOW',
+        return_url: params.returnUrl,
+        cancel_url: params.cancelUrl,
+      },
+    }),
+    cache: 'no-store',
+  })
+
+  const data = await res.json()
+  const approvalUrl = data.links?.find((l: { rel: string; href: string }) => l.rel === 'approve')?.href
+  if (!approvalUrl) throw new Error('PayPal: no approval URL for subscription')
+  return { subscriptionId: data.id, approvalUrl }
+}
+
+export async function getPayPalSubscription(
+  subscriptionId: string
+): Promise<{ status: string; customId: string }> {
+  const creds = {
+    clientId: process.env.PAYPAL_CLIENT_ID!,
+    clientSecret: process.env.PAYPAL_CLIENT_SECRET!,
+  }
+  const accessToken = await getAccessToken(creds)
+
+  const res = await fetch(`${getBaseUrl()}/v1/billing/subscriptions/${subscriptionId}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+    cache: 'no-store',
+  })
+
+  const data = await res.json()
+  return { status: data.status, customId: data.custom_id ?? '' }
+}
+
+export async function createPayPalPlatformOrder(params: {
+  amountCents: number
+  returnUrl: string
+  cancelUrl: string
+  customId: string
+}): Promise<{ orderId: string; approvalUrl: string }> {
+  const creds = {
+    clientId: process.env.PAYPAL_CLIENT_ID!,
+    clientSecret: process.env.PAYPAL_CLIENT_SECRET!,
+  }
+  const accessToken = await getAccessToken(creds)
+  const amount = (params.amountCents / 100).toFixed(2)
+
+  const res = await fetch(`${getBaseUrl()}/v2/checkout/orders`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      intent: 'CAPTURE',
+      purchase_units: [{
+        custom_id: params.customId,
+        description: 'Guest Booking System — Founding Member Lifetime Access',
+        amount: { currency_code: 'USD', value: amount },
+      }],
+      payment_source: {
+        paypal: {
+          experience_context: {
+            brand_name: 'Guest Booking System',
+            shipping_preference: 'NO_SHIPPING',
+            user_action: 'PAY_NOW',
+            return_url: params.returnUrl,
+            cancel_url: params.cancelUrl,
+          },
+        },
+      },
+    }),
+    cache: 'no-store',
+  })
+
+  const data = await res.json()
+  const approvalUrl = data.links?.find((l: { rel: string; href: string }) => l.rel === 'payer-action')?.href
+  if (!approvalUrl) throw new Error('PayPal: no approval URL for order')
+  return { orderId: data.id, approvalUrl }
+}
+
+export async function capturePayPalPlatformOrder(
+  orderId: string
+): Promise<{ success: boolean; customId: string }> {
+  const creds = {
+    clientId: process.env.PAYPAL_CLIENT_ID!,
+    clientSecret: process.env.PAYPAL_CLIENT_SECRET!,
+  }
+  const accessToken = await getAccessToken(creds)
+
+  const res = await fetch(`${getBaseUrl()}/v2/checkout/orders/${orderId}/capture`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    cache: 'no-store',
+  })
+
+  const data = await res.json()
+  const customId = data.purchase_units?.[0]?.custom_id ?? ''
+  return { success: data.status === 'COMPLETED', customId }
+}
+
 export async function refundPayPalCapture(
   captureId: string,
   credentials: PayPalCredentials

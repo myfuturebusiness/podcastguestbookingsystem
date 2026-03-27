@@ -6,6 +6,7 @@ import Logo from '@/components/ui/Logo'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import FormButton from '@/components/ui/FormButton'
 import { createCheckoutSession } from './actions'
+import { createPayPalCheckout } from './paypal-actions'
 import { getPricingSettings } from '@/lib/platform-settings'
 
 export default async function UpgradePage({
@@ -133,9 +134,21 @@ export default async function UpgradePage({
                   disabled={foundingSoldOut}
                   className="w-full rounded-xl bg-white text-indigo-700 font-bold text-sm py-3.5 hover:bg-indigo-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {foundingSoldOut ? 'Sold Out' : 'Claim Founding Member Spot →'}
+                  {foundingSoldOut ? 'Sold Out' : 'Pay with Card →'}
                 </FormButton>
               </form>
+
+              {!foundingSoldOut && (
+                <form action={createPayPalCheckout} className="mt-3">
+                  <input type="hidden" name="plan" value="founding" />
+                  <FormButton className="w-full rounded-xl bg-[#FFC439] text-[#003087] font-bold text-sm py-3.5 hover:bg-[#f0b730] transition-colors flex items-center justify-center gap-2">
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-[#003087]" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.59 3.025-2.566 6.082-8.558 6.082h-2.19c-1.53 0-2.82 1.118-3.053 2.632l-1.12 7.106H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c1.929 0 3.476.346 4.589 1.084 1.014.682 1.595 1.666 1.908 2.923-.3-.045-.604-.07-.733-.09z"/>
+                    </svg>
+                    Pay with PayPal
+                  </FormButton>
+                </form>
+              )}
             </div>
           </div>
 
@@ -167,15 +180,26 @@ export default async function UpgradePage({
               ))}
             </ul>
 
-            <form action={createCheckoutSession} className="mt-auto">
-              <input type="hidden" name="plan" value="monthly" />
-              <FormButton className="w-full rounded-xl bg-indigo-600 text-white font-bold text-sm py-3.5 hover:bg-indigo-700 transition-colors">
-                Get Started →
-              </FormButton>
-            </form>
-            <p className="text-center text-xs text-gray-400 dark:text-gray-500 mt-3">
-              Secure payment via Stripe
-            </p>
+            <div className="mt-auto flex flex-col gap-3">
+              <form action={createCheckoutSession}>
+                <input type="hidden" name="plan" value="monthly" />
+                <FormButton className="w-full rounded-xl bg-indigo-600 text-white font-bold text-sm py-3.5 hover:bg-indigo-700 transition-colors">
+                  Pay with Card →
+                </FormButton>
+              </form>
+              <form action={createPayPalCheckout}>
+                <input type="hidden" name="plan" value="monthly" />
+                <FormButton className="w-full rounded-xl bg-[#FFC439] text-[#003087] font-bold text-sm py-3.5 hover:bg-[#f0b730] transition-colors flex items-center justify-center gap-2">
+                  <svg viewBox="0 0 24 24" className="w-4 h-4 fill-[#003087]" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.59 3.025-2.566 6.082-8.558 6.082h-2.19c-1.53 0-2.82 1.118-3.053 2.632l-1.12 7.106H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c1.929 0 3.476.346 4.589 1.084 1.014.682 1.595 1.666 1.908 2.923-.3-.045-.604-.07-.733-.09z"/>
+                  </svg>
+                  Pay with PayPal
+                </FormButton>
+              </form>
+              <p className="text-center text-xs text-gray-400 dark:text-gray-500">
+                Secure payment via Stripe or PayPal
+              </p>
+            </div>
           </div>
 
         </div>
