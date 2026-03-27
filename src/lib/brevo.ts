@@ -39,15 +39,15 @@ export async function sendEmail(params: SendEmailParams) {
 
 const appUrl = () => process.env.NEXT_PUBLIC_APP_URL ?? 'https://guestbookingsystem.com'
 
-// Inline logo — table-based for email client compatibility
+// Inline logo — table-based, text-only for maximum email client compatibility
 const emailLogo = () => `
   <table cellpadding="0" cellspacing="0" border="0" style="margin:0 auto 32px auto;">
     <tr>
-      <td style="width:32px;height:32px;background:#4f46e5;border-radius:8px;text-align:center;vertical-align:middle;">
-        <span style="color:#ffffff;font-size:18px;line-height:32px;display:block;">🎙</span>
+      <td style="width:32px;height:32px;background:#4f46e5;border-radius:8px;text-align:center;vertical-align:middle;line-height:32px;">
+        <span style="color:#ffffff;font-size:13px;font-weight:800;font-family:sans-serif;display:block;line-height:32px;letter-spacing:-0.5px;">GBS</span>
       </td>
       <td style="padding-left:10px;vertical-align:middle;">
-        <span style="color:#ffffff;font-weight:700;font-size:18px;letter-spacing:-0.3px;white-space:nowrap;">Guest Booking System</span>
+        <span style="color:#ffffff;font-weight:700;font-size:18px;letter-spacing:-0.3px;white-space:nowrap;font-family:sans-serif;">Guest Booking System</span>
       </td>
     </tr>
   </table>`
