@@ -25,6 +25,7 @@ export async function sendEmail(params: SendEmailParams) {
         email: process.env.BREVO_FROM_EMAIL ?? 'noreply@guestbookingsystem.com',
       },
       to: Array.isArray(params.to) ? params.to : [params.to],
+      replyTo: { email: 'support@guestbookingsystem.com', name: 'Guest Booking System Support' },
       subject: params.subject,
       htmlContent: params.htmlContent,
     }),
