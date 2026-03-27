@@ -132,7 +132,7 @@ export default async function UpgradePage({
                 <input type="hidden" name="plan" value="founding" />
                 <FormButton
                   disabled={foundingSoldOut}
-                  className="w-full rounded-xl bg-white text-indigo-700 font-bold text-sm py-3.5 hover:bg-indigo-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full rounded-xl bg-white text-indigo-700 font-bold text-sm py-3.5 hover:bg-indigo-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
                   {foundingSoldOut ? 'Sold Out' : 'Pay with Card →'}
                 </FormButton>
@@ -186,7 +186,7 @@ export default async function UpgradePage({
             <div className="mt-8 flex flex-col gap-3">
               <form action={createCheckoutSession}>
                 <input type="hidden" name="plan" value="monthly" />
-                <FormButton className="w-full rounded-xl bg-indigo-600 text-white font-bold text-sm py-3.5 hover:bg-indigo-700 transition-colors">
+                <FormButton className="w-full rounded-xl bg-indigo-600 text-white font-bold text-sm py-3.5 hover:bg-indigo-700 transition-colors flex items-center justify-center">
                   Pay with Card →
                 </FormButton>
               </form>

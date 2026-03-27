@@ -12,14 +12,14 @@ export default function MonthlyThankYou() {
           </svg>
         </div>
 
-        <h1 className="text-3xl font-extrabold text-white mb-2 text-center leading-tight">
-          Welcome To The<br />Guest Booking System
+        <h1 className="text-2xl font-extrabold text-white mb-2 text-center leading-tight">
+          Welcome To The Guest Booking System!
         </h1>
         <p className="text-gray-400 mb-3">
           Your Host account is active and ready to go.
         </p>
         <div className="flex flex-col gap-1 mb-8">
-          <p className="text-xs text-gray-500 whitespace-nowrap">Renews monthly &mdash; cancel any time from your account settings.</p>
+          <p className="text-xs text-gray-500">Renews monthly &mdash; cancel any time from your account settings.</p>
           <p className="text-xs text-gray-500">A receipt has been sent to your email.</p>
         </div>
 
