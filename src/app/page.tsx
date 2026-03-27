@@ -314,8 +314,13 @@ export default async function HomePage() {
             {/* Founding Member */}
             <div className={`relative rounded-2xl p-8 shadow-xl flex flex-col ${foundingSoldOut ? 'bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 opacity-60' : 'bg-indigo-600 text-white'}`}>
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                <span className={`inline-flex items-center rounded-full px-4 py-1 text-xs font-bold uppercase tracking-widest shadow-sm whitespace-nowrap ${foundingSoldOut ? 'bg-gray-400 text-white' : 'bg-amber-400 text-amber-900'}`}>
-                  {foundingSoldOut ? 'Sold Out' : `⚡ Founding Member — ${foundingRemaining} spots left`}
+                <span className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1 text-xs font-bold uppercase tracking-widest shadow-sm whitespace-nowrap ${foundingSoldOut ? 'bg-gray-400 text-white' : 'bg-indigo-800 text-indigo-200'}`}>
+                  {!foundingSoldOut && (
+                    <svg className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+                    </svg>
+                  )}
+                  {foundingSoldOut ? 'Sold Out' : `Founding Member — ${foundingRemaining} spots left`}
                 </span>
               </div>
               <div className="mt-4">
