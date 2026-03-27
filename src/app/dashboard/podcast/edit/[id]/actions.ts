@@ -68,6 +68,19 @@ export async function updatePodcast(id: string, formData: FormData) {
   const hasAnyCredential = stripePublishableKey || stripeSecretKey || paypalClientId || paypalClientSecret
 
   if (hasAnyCredential) {
+    // Explicitly verify ownership before using admin client — prevents credential
+    // writes to podcasts the user does not own
+    const { data: ownedPodcast } = await supabase
+      .from('podcasts')
+      .select('id')
+      .eq('id', id)
+      .eq('host_id', user.id)
+      .maybeSingle()
+
+    if (!ownedPodcast) {
+      redirect(`/dashboard/podcast/edit/${id}?error=Unauthorised`)
+    }
+
     const adminSupabase = createAdminClient()
 
     // Build partial update — only overwrite fields that were provided
