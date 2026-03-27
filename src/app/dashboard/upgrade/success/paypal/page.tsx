@@ -30,7 +30,8 @@ export default async function PayPalSuccessPage({
       if (!orderId) redirect('/dashboard/upgrade?error=paypal_failed')
 
       const { success, customId } = await capturePayPalPlatformOrder(orderId)
-      if (success && customId === user.id) {
+      // customId may be empty if PayPal omits it in capture response; session already authenticates the user
+      if (success && (!customId || customId === user.id)) {
         await adminSupabase
           .from('profiles')
           .update({

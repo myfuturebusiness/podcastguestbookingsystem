@@ -223,7 +223,10 @@ export async function capturePayPalPlatformOrder(
 
   const data = await res.json()
   const customId = data.purchase_units?.[0]?.custom_id ?? ''
-  return { success: data.status === 'COMPLETED', customId }
+  const captureStatus = data.purchase_units?.[0]?.payments?.captures?.[0]?.status ?? ''
+  // Accept COMPLETED or PENDING (bank transfers land as PENDING in sandbox)
+  const success = data.status === 'COMPLETED' && ['COMPLETED', 'PENDING'].includes(captureStatus)
+  return { success, customId }
 }
 
 export async function refundPayPalCapture(

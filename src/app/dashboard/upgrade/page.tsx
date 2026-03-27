@@ -12,7 +12,7 @@ import { getPricingSettings } from '@/lib/platform-settings'
 export default async function UpgradePage({
   searchParams,
 }: {
-  searchParams: { error?: string; cancelled?: string }
+  searchParams: { error?: string; cancelled?: string; paypal_unavailable?: string }
 }) {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -72,6 +72,12 @@ export default async function UpgradePage({
         {searchParams.cancelled === '1' && (
           <div className="mb-8 rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-5 py-4 text-sm text-gray-600 dark:text-gray-400">
             Payment cancelled — no charge was made. You can try again any time.
+          </div>
+        )}
+
+        {searchParams.error === 'paypal_failed' && (
+          <div className="mb-8 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 px-5 py-4 text-sm text-red-700 dark:text-red-400">
+            Your PayPal payment could not be confirmed. No charge was made. Please try again or use a card instead.
           </div>
         )}
 
