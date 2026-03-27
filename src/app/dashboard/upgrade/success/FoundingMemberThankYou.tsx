@@ -1,25 +1,23 @@
-import Image from 'next/image'
 import Link from 'next/link'
 
 export default function FoundingMemberThankYou() {
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
-      <div className="max-w-lg w-full bg-gray-900 rounded-2xl border border-amber-500/30 shadow-xl px-8 py-10 text-center">
+      <div className="max-w-lg w-full bg-gray-900 rounded-2xl border border-indigo-500/30 shadow-xl px-8 py-10 text-center">
 
-        {/* Founding badge */}
-        <div className="inline-flex items-center rounded-full bg-amber-400/15 border border-amber-400/40 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-amber-400 mb-8">
-          ⚡ Founding Member
+        {/* Text logo */}
+        <div className="flex items-center justify-center gap-2 mb-8">
+          <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0">
+            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+            </svg>
+          </div>
+          <span className="text-white font-bold text-lg tracking-tight">Guest Booking System</span>
         </div>
 
-        {/* Logo */}
-        <div className="flex justify-center mb-6">
-          <Image
-            src="/logo-white.png"
-            alt="Guest Booking System"
-            width={120}
-            height={60}
-            className="object-contain"
-          />
+        {/* Founding badge */}
+        <div className="inline-flex items-center rounded-full bg-indigo-500/15 border border-indigo-500/40 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-indigo-400 mb-6">
+          ⚡ Founding Member
         </div>
 
         <h1 className="text-2xl font-extrabold text-white mb-3 leading-tight">
@@ -44,7 +42,7 @@ export default function FoundingMemberThankYou() {
               'Share your booking link and start accepting guests',
             ].map((step, i) => (
               <li key={step} className="flex items-start gap-3 text-sm text-gray-300">
-                <span className="shrink-0 w-5 h-5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-400 text-xs font-bold flex items-center justify-center mt-0.5">
+                <span className="shrink-0 w-5 h-5 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-400 text-xs font-bold flex items-center justify-center mt-0.5">
                   {i + 1}
                 </span>
                 {step}
@@ -55,7 +53,7 @@ export default function FoundingMemberThankYou() {
 
         <Link
           href="/dashboard/podcast/new"
-          className="block w-full rounded-xl bg-amber-400 text-amber-900 font-bold text-sm py-3.5 hover:bg-amber-300 transition-colors mb-3"
+          className="block w-full rounded-xl bg-indigo-600 text-white font-bold text-sm py-3.5 hover:bg-indigo-500 transition-colors mb-3"
         >
           Create your first show →
         </Link>
