@@ -6,7 +6,7 @@ interface SendEmailParams {
   htmlContent: string
 }
 
-async function sendEmail(params: SendEmailParams) {
+export async function sendEmail(params: SendEmailParams) {
   const apiKey = process.env.BREVO_API_KEY
   if (!apiKey) {
     console.warn('BREVO_API_KEY not set — skipping email')
