@@ -14,7 +14,7 @@ export default function FoundingMemberThankYou() {
         {/* Logo */}
         <div className="flex justify-center mb-6">
           <Image
-            src="/gbs logo white.png"
+            src="/gbs%20logo%20white.png"
             alt="Guest Booking System"
             width={120}
             height={60}

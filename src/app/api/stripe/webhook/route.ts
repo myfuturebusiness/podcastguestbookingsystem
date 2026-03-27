@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { sendFoundingMemberWelcome, sendMonthlyWelcome, sendAdminNewHostNotification } from '@/lib/brevo'
 
 export async function POST(req: NextRequest) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!.replace(/\s/g, ''))
@@ -51,6 +52,28 @@ export async function POST(req: NextRequest) {
           : null,
       })
       .eq('id', userId)
+
+    // Send welcome email to host + admin notification
+    const { data: profile } = await adminSupabase
+      .from('profiles')
+      .select('full_name, email')
+      .eq('id', userId)
+      .single()
+
+    if (profile?.email) {
+      const hostInfo = { email: profile.email, name: profile.full_name ?? 'there' }
+      if (plan === 'founding') {
+        await sendFoundingMemberWelcome(hostInfo)
+      } else {
+        await sendMonthlyWelcome(hostInfo)
+      }
+      await sendAdminNewHostNotification({
+        name: profile.full_name ?? 'Unknown',
+        email: profile.email,
+        plan: plan as 'founding' | 'monthly',
+        paymentMethod: 'stripe',
+      })
+    }
   }
 
   // Monthly subscription cancelled — downgrade back to guest, keep account intact

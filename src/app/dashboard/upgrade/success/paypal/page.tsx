@@ -5,6 +5,7 @@ import {
   capturePayPalPlatformOrder,
   getPayPalSubscription,
 } from '@/lib/paypal'
+import { sendFoundingMemberWelcome, sendMonthlyWelcome, sendAdminNewHostNotification } from '@/lib/brevo'
 import FoundingMemberThankYou from '../FoundingMemberThankYou'
 import MonthlyThankYou from '../MonthlyThankYou'
 
@@ -68,6 +69,28 @@ export default async function PayPalSuccessPage({
   }
 
   if (!activated) redirect('/dashboard/upgrade?error=paypal_failed')
+
+  // Send emails after successful PayPal activation
+  const { data: profile } = await adminSupabase
+    .from('profiles')
+    .select('full_name, email')
+    .eq('id', user.id)
+    .single()
+
+  if (profile?.email) {
+    const hostInfo = { email: profile.email, name: profile.full_name ?? 'there' }
+    if (plan === 'founding') {
+      await sendFoundingMemberWelcome(hostInfo)
+    } else {
+      await sendMonthlyWelcome(hostInfo)
+    }
+    await sendAdminNewHostNotification({
+      name: profile.full_name ?? 'Unknown',
+      email: profile.email,
+      plan: plan as 'founding' | 'monthly',
+      paymentMethod: 'paypal',
+    })
+  }
 
   if (plan === 'founding') return <FoundingMemberThankYou />
   return <MonthlyThankYou />
