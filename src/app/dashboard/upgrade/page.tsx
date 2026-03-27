@@ -104,7 +104,7 @@ export default async function UpgradePage({
               Lifetime Access
             </p>
             <div className="flex items-end gap-1 mb-1">
-              <span className="text-5xl font-black tracking-tight">{pricing.price_founding_display}</span>
+              <span className="text-4xl font-black tracking-tight whitespace-nowrap">{pricing.price_founding_display}</span>
             </div>
             <p className={`text-sm mb-6 ${foundingSoldOut ? 'text-gray-500 dark:text-gray-400' : 'text-indigo-200'}`}>
               Pay once. Use forever.
