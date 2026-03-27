@@ -16,8 +16,11 @@ export default function FoundingMemberThankYou() {
         </div>
 
         {/* Founding badge */}
-        <div className="inline-flex items-center rounded-full bg-indigo-500/15 border border-indigo-500/40 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-indigo-400 mb-6">
-          ⚡ Founding Member
+        <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/15 border border-indigo-500/40 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-indigo-400 mb-6">
+          <svg className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+          </svg>
+          Founding Member
         </div>
 
         <h1 className="text-2xl font-extrabold text-white mb-3 leading-tight">
