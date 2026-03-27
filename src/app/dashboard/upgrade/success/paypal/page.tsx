@@ -48,7 +48,8 @@ export default async function PayPalSuccessPage({
       if (!subscriptionId) redirect('/dashboard/upgrade?error=paypal_failed')
 
       const { status, customId } = await getPayPalSubscription(subscriptionId)
-      if ((status === 'ACTIVE' || status === 'APPROVED') && customId === user.id) {
+      const idMatches = !customId || customId === user.id
+      if ((status === 'ACTIVE' || status === 'APPROVED') && idMatches) {
         await adminSupabase
           .from('profiles')
           .update({
