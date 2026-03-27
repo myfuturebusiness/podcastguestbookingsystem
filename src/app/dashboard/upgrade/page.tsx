@@ -87,7 +87,7 @@ export default async function UpgradePage({
           <div className={`relative rounded-2xl flex flex-col ${foundingSoldOut ? 'bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 opacity-60' : 'bg-indigo-600 text-white shadow-xl'} p-8`}>
             {!foundingSoldOut && (
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                <span className="inline-flex items-center rounded-full bg-indigo-500 px-4 py-1 text-xs font-bold uppercase tracking-widest text-white shadow-sm whitespace-nowrap">
+                <span className="inline-flex items-center rounded-full bg-white/20 border border-white/40 px-4 py-1 text-xs font-bold uppercase tracking-widest text-white shadow-sm whitespace-nowrap">
                   ⚡ Founding Member
                 </span>
               </div>
@@ -167,7 +167,7 @@ export default async function UpgradePage({
               Monthly
             </p>
             <div className="flex items-end gap-1 mb-1">
-              <span className="text-5xl font-black tracking-tight text-gray-900 dark:text-white">{pricing.price_monthly_display}</span>
+              <span className="text-4xl font-black tracking-tight text-gray-900 dark:text-white whitespace-nowrap">{pricing.price_monthly_display}</span>
             </div>
             <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
               Cancel anytime. No lock-in.
@@ -192,7 +192,7 @@ export default async function UpgradePage({
             <div className="mt-8 flex flex-col gap-3">
               <form action={createCheckoutSession}>
                 <input type="hidden" name="plan" value="monthly" />
-                <FormButton className="w-full rounded-xl bg-indigo-600 text-white font-bold text-sm py-3.5 hover:bg-indigo-700 transition-colors flex items-center justify-center">
+                <FormButton className="w-full rounded-xl bg-white text-indigo-700 font-bold text-sm py-3.5 hover:bg-indigo-50 transition-colors flex items-center justify-center">
                   Pay with Card →
                 </FormButton>
               </form>
