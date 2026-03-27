@@ -21,8 +21,8 @@ async function sendEmail(params: SendEmailParams) {
     },
     body: JSON.stringify({
       sender: {
-        name: process.env.BREVO_SENDER_NAME ?? 'Guest Booking System',
-        email: process.env.BREVO_SENDER_EMAIL ?? 'noreply@guestbookingsystem.com',
+        name: 'Guest Booking System',
+        email: process.env.BREVO_FROM_EMAIL ?? 'noreply@guestbookingsystem.com',
       },
       to: params.to,
       subject: params.subject,
@@ -37,7 +37,7 @@ async function sendEmail(params: SendEmailParams) {
 }
 
 const appUrl = () => process.env.NEXT_PUBLIC_APP_URL ?? 'https://guestbookingsystem.com'
-const logoUrl = () => `${appUrl()}/gbs%20logo%20white.png`
+const logoUrl = () => `${appUrl()}/logo-white.png`
 
 // ── Host welcome emails ──────────────────────────────────────────────────────
 
