@@ -140,19 +140,21 @@ export async function sendAdminNewHostNotification(host: {
     to: [{ email: adminEmail, name: 'Rick Nuske' }],
     subject: `🎉 New Host Signup: ${host.name}`,
     htmlContent: `
-      <div style="font-family:sans-serif;max-width:480px;margin:0 auto;background:#111827;color:#f9fafb;padding:32px;border-radius:16px;">
+      <div style="font-family:sans-serif;max-width:560px;margin:0 auto;background:#111827;color:#f9fafb;padding:40px 32px;border-radius:16px;">
         ${emailLogo()}
-        <h2 style="color:#ffffff;margin:0 0 24px;font-size:20px;text-align:center;line-height:1.3;">New Host Signed Up 🎉</h2>
-        <div style="background:#1f2937;border-radius:12px;padding:20px;margin-bottom:24px;">
+        <h2 style="color:#ffffff;margin:0 0 24px;font-size:22px;text-align:center;line-height:1.3;">New Host Signed Up 🎉</h2>
+        <div style="background:#1f2937;border-radius:12px;padding:20px;margin-bottom:32px;">
           ${[['Name', host.name], ['Email', host.email], ['Plan', planLabel], ['Payment via', host.paymentMethod === 'stripe' ? 'Stripe' : 'PayPal']].map(([label, value]) => `
-            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #374151;">
-              <span style="color:#6b7280;font-size:13px;">${label}</span>
-              <span style="color:#f9fafb;font-size:13px;font-weight:600;">${value}</span>
-            </div>
+            <table cellpadding="0" cellspacing="0" border="0" style="width:100%;border-bottom:1px solid #374151;">
+              <tr>
+                <td style="color:#6b7280;font-size:13px;padding:10px 0;vertical-align:middle;">${label}</td>
+                <td style="color:#f9fafb;font-size:13px;font-weight:600;padding:10px 0;text-align:right;vertical-align:middle;">${value}</td>
+              </tr>
+            </table>
           `).join('')}
         </div>
         <div style="text-align:center;">
-          <a href="${appUrl()}/admin" style="display:inline-block;background:#4f46e5;color:#ffffff;font-weight:700;font-size:13px;text-decoration:none;padding:12px 24px;border-radius:10px;">View in Admin Panel →</a>
+          <a href="${appUrl()}/admin" style="display:inline-block;background:#4f46e5;color:#ffffff;font-weight:700;font-size:14px;text-decoration:none;padding:14px 32px;border-radius:12px;">View in Admin Panel →</a>
         </div>
       </div>
     `,
