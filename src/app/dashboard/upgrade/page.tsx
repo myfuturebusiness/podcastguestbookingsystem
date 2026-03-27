@@ -87,7 +87,7 @@ export default async function UpgradePage({
           <div className={`relative rounded-2xl flex flex-col ${foundingSoldOut ? 'bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 opacity-60' : 'bg-indigo-600 text-white shadow-xl'} p-8`}>
             {!foundingSoldOut && (
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                <span className="inline-flex items-center rounded-full bg-amber-400 px-4 py-1 text-xs font-bold uppercase tracking-widest text-amber-900 shadow-sm whitespace-nowrap">
+                <span className="inline-flex items-center rounded-full bg-indigo-500 px-4 py-1 text-xs font-bold uppercase tracking-widest text-white shadow-sm whitespace-nowrap">
                   ⚡ Founding Member
                 </span>
               </div>
@@ -111,7 +111,7 @@ export default async function UpgradePage({
             </p>
 
             {!foundingSoldOut && (
-              <p className="text-xs font-semibold text-amber-300 mb-6">
+              <p className="text-xs font-semibold text-indigo-300 mb-6">
                 {foundingRemaining} of {pricing.founding_max_seats} spots remaining
               </p>
             )}
