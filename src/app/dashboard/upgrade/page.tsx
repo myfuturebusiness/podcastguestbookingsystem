@@ -87,8 +87,11 @@ export default async function UpgradePage({
           <div className={`relative rounded-2xl flex flex-col ${foundingSoldOut ? 'bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 opacity-60' : 'bg-indigo-600 text-white shadow-xl'} p-8`}>
             {!foundingSoldOut && (
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                <span className="inline-flex items-center rounded-full bg-white/20 border border-white/40 px-4 py-1 text-xs font-bold uppercase tracking-widest text-white shadow-sm whitespace-nowrap">
-                  ⚡ Founding Member
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-800 px-4 py-1 text-xs font-bold uppercase tracking-widest text-indigo-200 shadow-sm whitespace-nowrap">
+                  <svg className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+                  </svg>
+                  Founding Member
                 </span>
               </div>
             )}
