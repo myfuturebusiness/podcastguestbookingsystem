@@ -24,7 +24,7 @@ export default async function UpgradePage({
     .eq('id', user.id)
     .single()
 
-  if (profile?.role === 'host') redirect('/dashboard')
+  if (profile?.role === 'host' || profile?.role === 'admin') redirect('/dashboard')
 
   // Load pricing from DB + live founding count in parallel
   const adminSupabase = createAdminClient()

@@ -3,7 +3,7 @@ import Link from 'next/link'
 export default function MonthlyThankYou() {
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-gray-900 rounded-2xl border border-gray-700 shadow-xl p-10 text-center">
+      <div className="max-w-lg w-full bg-gray-900 rounded-2xl border border-gray-700 shadow-xl px-8 py-10 text-center">
 
         {/* Icon */}
         <div className="w-16 h-16 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center mx-auto mb-6">
@@ -12,7 +12,7 @@ export default function MonthlyThankYou() {
           </svg>
         </div>
 
-        <h1 className="text-2xl font-extrabold text-white mb-2 text-center leading-tight">
+        <h1 className="text-xl font-extrabold text-white mb-2 text-center leading-tight whitespace-nowrap">
           Welcome To The Guest Booking System!
         </h1>
         <p className="text-gray-400 mb-3">
