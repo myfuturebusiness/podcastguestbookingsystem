@@ -7,6 +7,8 @@ import Logo from '@/components/ui/Logo'
 import FormButton from '@/components/ui/FormButton'
 import { addWebhook, deleteWebhook, toggleWebhook } from './webhook-actions'
 import { setUserRole } from './user-actions'
+import { savePricingSettings } from './pricing-actions'
+import { getPricingSettings } from '@/lib/platform-settings'
 
 async function signOut() {
   'use server'
@@ -57,7 +59,7 @@ const ROLE_STYLES: Record<string, string> = {
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: { tab?: string }
+  searchParams: { tab?: string; saved?: string }
 }) {
   const supabase = createClient()
   const {
@@ -100,6 +102,8 @@ export default async function AdminPage({
   )
 
   // ── Tab-specific data ──────────────────────────────────────────────────────
+  const pricingSettings = tab === 'pricing' ? await getPricingSettings() : null
+
   const [users, podcasts, bookings, emailLogs, webhooks] = await Promise.all([
     tab === 'users' || tab === 'overview'
       ? adminSupabase
@@ -203,6 +207,7 @@ export default async function AdminPage({
     { key: 'bookings', label: `Bookings (${totalBookings ?? 0})` },
     { key: 'emails', label: 'Email Logs' },
     { key: 'webhooks', label: 'Webhooks' },
+    { key: 'pricing', label: 'Pricing' },
   ]
 
   return (
@@ -450,6 +455,116 @@ export default async function AdminPage({
                 </table>
               </div>
             )}
+          </section>
+        )}
+
+        {/* ── PRICING ── */}
+        {tab === 'pricing' && pricingSettings && (
+          <section className="max-w-xl">
+            <h2 className="text-lg font-semibold mb-1">Pricing Settings</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+              Update Stripe price IDs or display labels here — no code changes or redeploys needed.
+              To change a price: create a new price in your{' '}
+              <a href="https://dashboard.stripe.com/products" target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 hover:underline">
+                Stripe Dashboard
+              </a>
+              , copy the new <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded text-xs">price_…</code> ID, paste it below, and save.
+            </p>
+
+            {searchParams.saved === '1' && (
+              <div className="mb-6 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-5 py-3 text-sm text-green-700 dark:text-green-400">
+                Settings saved successfully.
+              </div>
+            )}
+
+            <form action={savePricingSettings} className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 space-y-5">
+
+              <div className="border-b border-gray-100 dark:border-gray-800 pb-5 space-y-4">
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Founding Member Plan</h3>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
+                    Stripe Price ID <span className="text-gray-400 font-normal">(one-time payment)</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="stripe_price_founding"
+                    defaultValue={pricingSettings.stripe_price_founding}
+                    placeholder="price_…"
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
+                      Display Price
+                    </label>
+                    <input
+                      type="text"
+                      name="price_founding_display"
+                      defaultValue={pricingSettings.price_founding_display}
+                      placeholder="$297 one-time"
+                      className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
+                      Max Seats
+                    </label>
+                    <input
+                      type="number"
+                      name="founding_max_seats"
+                      defaultValue={pricingSettings.founding_max_seats}
+                      min="1"
+                      max="9999"
+                      className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Monthly Plan</h3>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
+                    Stripe Price ID <span className="text-gray-400 font-normal">(recurring)</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="stripe_price_monthly"
+                    defaultValue={pricingSettings.stripe_price_monthly}
+                    placeholder="price_…"
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
+                    Display Price
+                  </label>
+                  <input
+                    type="text"
+                    name="price_monthly_display"
+                    defaultValue={pricingSettings.price_monthly_display}
+                    placeholder="$47/month"
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <FormButton className="rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 text-sm font-semibold transition-colors">
+                  Save Pricing Settings
+                </FormButton>
+              </div>
+            </form>
+
+            <div className="mt-6 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-4 text-sm text-amber-700 dark:text-amber-400">
+              <strong>How to update pricing:</strong>
+              <ol className="mt-2 space-y-1 list-decimal list-inside text-amber-600 dark:text-amber-500">
+                <li>Go to Stripe Dashboard → Products → Add a price to your product</li>
+                <li>Copy the new <code className="bg-amber-100 dark:bg-amber-900/40 px-1 rounded text-xs">price_…</code> ID</li>
+                <li>Paste it above and click Save — changes take effect immediately</li>
+              </ol>
+            </div>
           </section>
         )}
 

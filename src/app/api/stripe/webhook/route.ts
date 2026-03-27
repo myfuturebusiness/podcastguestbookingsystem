@@ -24,6 +24,8 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  const adminSupabase = createAdminClient()
+
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
 
@@ -38,7 +40,6 @@ export async function POST(req: NextRequest) {
 
     if (!userId || !plan) return NextResponse.json({ received: true })
 
-    const adminSupabase = createAdminClient()
     await adminSupabase
       .from('profiles')
       .update({
@@ -50,6 +51,22 @@ export async function POST(req: NextRequest) {
           : null,
       })
       .eq('id', userId)
+  }
+
+  // Monthly subscription cancelled — downgrade back to guest, keep account intact
+  if (event.type === 'customer.subscription.deleted') {
+    const subscription = event.data.object as Stripe.Subscription
+    const customerId = typeof subscription.customer === 'string'
+      ? subscription.customer
+      : subscription.customer?.id
+
+    if (customerId) {
+      await adminSupabase
+        .from('profiles')
+        .update({ role: 'guest', host_plan: null })
+        .eq('stripe_customer_id', customerId)
+        .eq('host_plan', 'monthly') // Never downgrade founding members
+    }
   }
 
   return NextResponse.json({ received: true })

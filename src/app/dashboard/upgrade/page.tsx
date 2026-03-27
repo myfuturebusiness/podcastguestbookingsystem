@@ -6,8 +6,7 @@ import Logo from '@/components/ui/Logo'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import FormButton from '@/components/ui/FormButton'
 import { createCheckoutSession } from './actions'
-
-const FOUNDING_MAX_SEATS = parseInt(process.env.STRIPE_FOUNDING_MAX_SEATS ?? '25', 10)
+import { getPricingSettings } from '@/lib/platform-settings'
 
 export default async function UpgradePage({
   searchParams,
@@ -26,15 +25,18 @@ export default async function UpgradePage({
 
   if (profile?.role === 'host') redirect('/dashboard')
 
-  // Live founding member count
+  // Load pricing from DB + live founding count in parallel
   const adminSupabase = createAdminClient()
-  const { count: foundingCount } = await adminSupabase
-    .from('profiles')
-    .select('*', { count: 'exact', head: true })
-    .eq('host_plan', 'founding')
+  const [pricing, { count: foundingCount }] = await Promise.all([
+    getPricingSettings(),
+    adminSupabase
+      .from('profiles')
+      .select('*', { count: 'exact', head: true })
+      .eq('host_plan', 'founding'),
+  ])
 
   const foundingTaken = foundingCount ?? 0
-  const foundingRemaining = Math.max(0, FOUNDING_MAX_SEATS - foundingTaken)
+  const foundingRemaining = Math.max(0, pricing.founding_max_seats - foundingTaken)
   const foundingSoldOut = foundingRemaining === 0
 
   return (
@@ -96,8 +98,7 @@ export default async function UpgradePage({
                 Lifetime Access
               </p>
               <div className="flex items-end gap-1 mb-1">
-                <span className="text-5xl font-black tracking-tight">$297</span>
-                <span className={`mb-2 text-sm font-medium ${foundingSoldOut ? 'text-gray-400' : 'text-indigo-300'}`}>once</span>
+                <span className="text-5xl font-black tracking-tight">{pricing.price_founding_display}</span>
               </div>
               <p className={`text-sm mb-6 ${foundingSoldOut ? 'text-gray-500 dark:text-gray-400' : 'text-indigo-200'}`}>
                 Pay once. Use forever.
@@ -105,7 +106,7 @@ export default async function UpgradePage({
 
               {!foundingSoldOut && (
                 <p className="text-xs font-semibold text-amber-300 mb-6">
-                  {foundingRemaining} of {FOUNDING_MAX_SEATS} spots remaining
+                  {foundingRemaining} of {pricing.founding_max_seats} spots remaining
                 </p>
               )}
 
@@ -144,8 +145,7 @@ export default async function UpgradePage({
               Monthly
             </p>
             <div className="flex items-end gap-1 mb-1">
-              <span className="text-5xl font-black tracking-tight text-gray-900 dark:text-white">$47</span>
-              <span className="text-gray-400 mb-2 text-sm font-medium">/month</span>
+              <span className="text-5xl font-black tracking-tight text-gray-900 dark:text-white">{pricing.price_monthly_display}</span>
             </div>
             <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
               Cancel anytime. No lock-in.

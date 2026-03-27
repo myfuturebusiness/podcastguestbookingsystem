@@ -5,13 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import Stripe from 'stripe'
 import { getAppUrl } from '@/lib/app-url'
-
-const PRICE_IDS: Record<string, string> = {
-  founding: (process.env.STRIPE_PRICE_FOUNDING ?? '').trim(),
-  monthly: (process.env.STRIPE_PRICE_MONTHLY ?? '').trim(),
-}
-
-const FOUNDING_MAX_SEATS = parseInt(process.env.STRIPE_FOUNDING_MAX_SEATS ?? '25', 10)
+import { getPricingSettings } from '@/lib/platform-settings'
 
 export async function createCheckoutSession(formData: FormData) {
   const supabase = createClient()
@@ -29,6 +23,8 @@ export async function createCheckoutSession(formData: FormData) {
   const plan = formData.get('plan') as string
   if (!['founding', 'monthly'].includes(plan)) return
 
+  const pricing = await getPricingSettings()
+
   // Enforce founding member cap
   if (plan === 'founding') {
     const adminSupabase = createAdminClient()
@@ -37,12 +33,12 @@ export async function createCheckoutSession(formData: FormData) {
       .select('*', { count: 'exact', head: true })
       .eq('host_plan', 'founding')
 
-    if ((count ?? 0) >= FOUNDING_MAX_SEATS) {
+    if ((count ?? 0) >= pricing.founding_max_seats) {
       redirect('/dashboard/upgrade?error=founding_sold_out')
     }
   }
 
-  const priceId = PRICE_IDS[plan]
+  const priceId = plan === 'founding' ? pricing.stripe_price_founding : pricing.stripe_price_monthly
   if (!priceId) return
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!.replace(/\s/g, ''))
