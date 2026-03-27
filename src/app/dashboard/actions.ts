@@ -7,6 +7,7 @@ import { getAppUrl } from '@/lib/app-url'
 import { sendEmail } from '@/lib/brevo'
 import { emailWrap } from '@/lib/email-templates'
 import { formatInTimezone } from '@/lib/availability'
+import Stripe from 'stripe'
 
 async function getHostPodcastIds(hostId: string): Promise<string[]> {
   const supabase = createClient()
@@ -391,4 +392,28 @@ export async function deleteApplication(applicationId: string) {
   await adminSupabase.from('applications').delete().eq('id', applicationId)
 
   redirect('/dashboard?message=Application+deleted.')
+}
+
+export async function openBillingPortal() {
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/auth/signin')
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('stripe_customer_id, host_plan')
+    .eq('id', user.id)
+    .single()
+
+  if (!profile?.stripe_customer_id || profile.host_plan !== 'monthly') {
+    redirect('/dashboard')
+  }
+
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!.replace(/\s/g, ''))
+  const session = await stripe.billingPortal.sessions.create({
+    customer: profile.stripe_customer_id,
+    return_url: `${getAppUrl()}/dashboard`,
+  })
+
+  redirect(session.url)
 }

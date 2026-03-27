@@ -4,7 +4,7 @@ import Link from 'next/link'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import Logo from '@/components/ui/Logo'
 import CopyLinkButton from '@/components/ui/CopyLinkButton'
-import { approveBooking, rejectBooking, deleteApplication, markComplete, rescheduleBooking, hostRequestReschedule } from './actions'
+import { approveBooking, rejectBooking, deleteApplication, markComplete, rescheduleBooking, hostRequestReschedule, openBillingPortal } from './actions'
 import { getAppUrl } from '@/lib/app-url'
 import FormButton from '@/components/ui/FormButton'
 
@@ -98,12 +98,15 @@ export default async function DashboardPage({
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('full_name, role')
+    .select('full_name, role, host_plan, host_subscribed_at, stripe_customer_id')
     .eq('id', user.id)
     .single()
 
   const displayName = profile?.full_name ?? user.email
   const role = profile?.role ?? 'unknown'
+  const hostPlan = profile?.host_plan ?? null
+  const hostSubscribedAt = profile?.host_subscribed_at ?? null
+  const stripeCustomerId = profile?.stripe_customer_id ?? null
 
   const { data: podcasts } =
     role === 'host'
@@ -274,6 +277,48 @@ export default async function DashboardPage({
             {role}
           </span>
         </p>
+
+        {/* HOST: subscription info */}
+        {role === 'host' && hostPlan && (
+          <div className="mt-6 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className={`mt-0.5 w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${hostPlan === 'founding' ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-indigo-100 dark:bg-indigo-900/30'}`}>
+                {hostPlan === 'founding' ? (
+                  <svg className="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                )}
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                  {hostPlan === 'founding' ? 'Founding Member — Lifetime Access' : 'Host Plan — Monthly Subscription'}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  {hostPlan === 'founding'
+                    ? 'One-time payment · Access never expires'
+                    : 'Renews monthly · Cancel any time'}
+                  {hostSubscribedAt && (
+                    <> · Subscribed {new Date(hostSubscribedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</>
+                  )}
+                </p>
+              </div>
+            </div>
+            {hostPlan === 'monthly' && stripeCustomerId && (
+              <form action={openBillingPortal}>
+                <button
+                  type="submit"
+                  className="shrink-0 rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  Manage Billing →
+                </button>
+              </form>
+            )}
+          </div>
+        )}
 
         {/* HOST: podcast management */}
         {role === 'host' && (

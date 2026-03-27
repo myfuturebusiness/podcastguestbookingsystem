@@ -135,15 +135,16 @@ function MonthlyThankYou() {
           </svg>
         </div>
 
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-          Welcome to Guest Booking System!
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 whitespace-nowrap">
+          Welcome To The Guest Booking System!
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mb-2">
           Your Host account is active and ready to go.
         </p>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
-          Your subscription renews monthly. You can cancel any time from your account settings. A receipt has been sent to your email.
-        </p>
+        <div className="flex flex-col gap-1.5 mb-8">
+          <p className="text-sm text-gray-500 dark:text-gray-400">Renews monthly &mdash; cancel any time from your account settings.</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">A receipt has been sent to your email.</p>
+        </div>
 
         {/* What's next */}
         <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-5 mb-6 text-left">
