@@ -12,8 +12,8 @@ export default function MonthlyThankYou() {
           </svg>
         </div>
 
-        <h1 className="text-3xl font-extrabold text-white mb-2 whitespace-nowrap">
-          Welcome To The Guest Booking System!
+        <h1 className="text-3xl font-extrabold text-white mb-2 text-center leading-tight">
+          Welcome To The<br />Guest Booking System
         </h1>
         <p className="text-gray-400 mb-3">
           Your Host account is active and ready to go.
