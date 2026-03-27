@@ -1,7 +1,7 @@
 const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email'
 
 interface SendEmailParams {
-  to: { email: string; name?: string }[]
+  to: { email: string; name?: string } | { email: string; name?: string }[]
   subject: string
   htmlContent: string
 }
@@ -24,7 +24,7 @@ export async function sendEmail(params: SendEmailParams) {
         name: 'Guest Booking System',
         email: process.env.BREVO_FROM_EMAIL ?? 'noreply@guestbookingsystem.com',
       },
-      to: params.to,
+      to: Array.isArray(params.to) ? params.to : [params.to],
       subject: params.subject,
       htmlContent: params.htmlContent,
     }),
